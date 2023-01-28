@@ -1,0 +1,5 @@
+<atlas>
+	<tex n="atlas0" w="256" h="64" >
+		<img n="MarioPlayButton" x="0" y="0" w="128" h="48" />
+	</tex>
+</atlas>
