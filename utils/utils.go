@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	. "github.com/umi-l/open-mario-maker/types"
+	. "github.com/umi-l/yosui-ui/types"
 )
 
 func GetDt() func() time.Duration {
