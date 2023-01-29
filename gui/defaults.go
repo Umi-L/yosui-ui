@@ -18,7 +18,6 @@ func (_ defaultsT) CalculateRect(e ElementInterface) types.Rect {
 
 	if c.Parent == nil {
 		parentExists = false
-		//log.Print("WARN: Container has no parent, cannot calculate rect relative to parent")
 	}
 
 	calcRect := types.Rect{}

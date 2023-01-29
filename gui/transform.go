@@ -26,3 +26,43 @@ func MakeTransformWithImage(image *ebiten.Image, origin OriginIndex) Transform {
 		Origin: Origin{OriginIndex: origin},
 	}
 }
+
+func (t Transform) SetHPercent(value float32) Transform {
+	t.HPercent = value
+	return t
+}
+
+func (t Transform) SetWPercent(value float32) Transform {
+	t.WPercent = value
+	return t
+}
+
+func (t Transform) SetXPercent(value float32) Transform {
+	t.XPercent = value
+	return t
+}
+
+func (t Transform) SetYPercent(value float32) Transform {
+	t.YPercent = value
+	return t
+}
+
+func (t Transform) SetH(value float32) Transform {
+	t.H = value
+	return t
+}
+
+func (t Transform) SetW(value float32) Transform {
+	t.W = value
+	return t
+}
+
+func (t Transform) SetX(value float32) Transform {
+	t.X = value
+	return t
+}
+
+func (t Transform) SetY(value float32) Transform {
+	t.Y = value
+	return t
+}

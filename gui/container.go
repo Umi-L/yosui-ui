@@ -16,9 +16,19 @@ type Container struct {
 	Visible bool
 }
 
+// function used to SET the transform of a container. Should ONLY be used during init or if you know what you're doing.
 func (c *Container) SetTransform(t Transform) {
 	c.Transform = t
+}
+
+// function used to UPDATE the transform of a container and all of its children. Should be used during runtime.
+func (c *Container) UpdateTransform(t Transform) {
+	c.Transform = t
 	c.CalculateRect()
+
+	for _, child := range c.children {
+		child.CalculateRect()
+	}
 }
 
 func (c *Container) AddChild(child ElementInterface) {
@@ -36,7 +46,7 @@ func (c Container) IsVisible() bool {
 	if !c.Visible {
 		return false
 	}
-	
+
 	if c.Parent != nil {
 		return c.Parent.IsVisible()
 	}
@@ -70,28 +80,6 @@ func (c Container) GetContainer() Container {
 func (c *Container) CalculateRect() {
 	c.Rect = Defaults.CalculateRect(c)
 }
-
-// func NewRelativeContainer(parent *Container) Container {
-// 	newContainer := Container{
-// 		Parent: parent,
-// 	}
-
-// 	parent.children = append(parent.children, &newContainer)
-
-// 	return newContainer
-// }
-
-// func NewRootContainer(screenW int, screenH int) Container {
-
-// 	return Container{
-// 		Rect: Rect{
-// 			X: 0,
-// 			Y: 0,
-// 			W: float32(screenW),
-// 			H: float32(screenH),
-// 		},
-// 	}
-// }
 
 func NewContainer(Transform Transform, visible bool) Container {
 	return Container{Transform: Transform, Visible: visible}
