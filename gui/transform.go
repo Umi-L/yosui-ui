@@ -20,8 +20,8 @@ type Transform struct {
 
 func MakeTransformWithImage(image *ebiten.Image, origin OriginIndex) Transform {
 	return Transform{
-		W: float32(image.Bounds().Max.X),
-		H: float32(image.Bounds().Max.Y),
+		W: float32(image.Bounds().Max.X - image.Bounds().Min.X),
+		H: float32(image.Bounds().Max.Y - image.Bounds().Min.Y),
 
 		Origin: Origin{OriginIndex: origin},
 	}

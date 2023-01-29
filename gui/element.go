@@ -15,8 +15,6 @@ type Element struct { //elements are just Containers with drawables
 	initialized bool
 
 	name string
-
-	OnClick func()
 }
 
 func (e *Element) Init() {
