@@ -3,15 +3,21 @@ package gui
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	. "github.com/umi-l/yosui-ui/types"
+	"log"
+	"sort"
 )
 
 type Container struct {
+	IsRoot    bool
+	drawStack map[int][]DrawCall
+	ZIndex    int
+
 	Parent *Container
 	Rect   Rect
 
 	Transform Transform
 
-	children []ElementInterface
+	Children []ElementInterface
 
 	Visible bool
 }
@@ -21,20 +27,37 @@ func (c *Container) SetTransform(t Transform) {
 	c.Transform = t
 }
 
+func (c *Container) AddToDrawStack(zIndex int, call DrawCall) {
+	if !c.IsRoot {
+		log.Fatal("Trying to add to drawstack of non root container.")
+	}
+
+	c.drawStack[zIndex] = append(c.drawStack[zIndex], call)
+}
+
+func (c *Container) GetRoot() *Container {
+
+	if c.IsRoot {
+		return c
+	}
+
+	return c.Parent.GetRoot()
+}
+
 // function used to UPDATE the transform of a container and all of its children. Should be used during runtime.
 func (c *Container) UpdateTransform(t Transform) {
 	c.Transform = t
-	c.CalculateRect()
+	c.calculateRect()
 
-	for _, child := range c.children {
-		child.CalculateRect()
+	for _, child := range c.Children {
+		child.calculateRect()
 	}
 }
 
 func (c *Container) AddChild(child ElementInterface) {
-	c.children = append(c.children, child)
+	c.Children = append(c.Children, child)
 	child.SetParent(c)
-	child.CalculateRect()
+	child.calculateRect()
 }
 
 func (c *Container) SetParent(parent *Container) {
@@ -54,30 +77,59 @@ func (c Container) IsVisible() bool {
 	return true
 }
 
-func (c Container) Draw(screen *ebiten.Image) {}
+func (c Container) drawSelf() {}
 
 func (c *Container) Update() {
 	Defaults.UpdateChildren(c)
 }
 
-func (c Container) DrawTree(screen *ebiten.Image) {
-
-	if !c.Visible {
-		return
-	}
-
-	for _, child := range c.children {
-
-		Draw(child, screen)
-		child.DrawTree(screen)
-	}
+func (c *Container) draw() {
+	Defaults.Draw(c)
 }
 
-func (c Container) GetContainer() Container {
+func (c *Container) DrawAsRoot(screen *ebiten.Image) {
+	c.draw()
+
+	if !c.IsRoot {
+		log.Fatal("Trying to draw as root with non-root container")
+	}
+
+	//get keys in order
+	keys := make([]int, len(c.drawStack))
+
+	i := 0
+	for k := range c.drawStack {
+		keys[i] = k
+		i++
+	}
+
+	sort.Ints(keys)
+
+	//make draw calls
+	for j := range c.drawStack {
+		calls := c.drawStack[keys[j]]
+		for _, call := range calls {
+			call(screen)
+		}
+	}
+
+	//clear stack
+	c.drawStack = make(map[int][]DrawCall)
+}
+
+func (c *Container) InitializeDrawStack() {
+	if !c.IsRoot {
+		log.Fatal("trying to initialize draw stack on non-root container")
+	}
+
+	c.drawStack = make(map[int][]DrawCall)
+}
+
+func (c *Container) GetContainer() *Container {
 	return c
 }
 
-func (c *Container) CalculateRect() {
+func (c *Container) calculateRect() {
 	c.Rect = Defaults.CalculateRect(c)
 }
 

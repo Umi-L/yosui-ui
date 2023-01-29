@@ -37,7 +37,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	g.Gui.Root.UpdateTransform(gui.Transform{X: 0, Y: 0, W: float32(w), H: float32(h)})
 
-	g.Gui.Root.DrawTree(screen)
+	g.Gui.Root.DrawAsRoot(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {

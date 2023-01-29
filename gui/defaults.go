@@ -64,8 +64,8 @@ func (_ defaultsT) CalculateRect(e ElementInterface) types.Rect {
 	calcRect.X -= c.Transform.Origin.X
 	calcRect.Y -= c.Transform.Origin.Y
 
-	for _, child := range c.children {
-		child.CalculateRect()
+	for _, child := range c.Children {
+		child.calculateRect()
 	}
 
 	return calcRect
@@ -73,7 +73,19 @@ func (_ defaultsT) CalculateRect(e ElementInterface) types.Rect {
 
 func (_ defaultsT) UpdateChildren(e ElementInterface) {
 
-	for _, child := range e.GetContainer().children {
+	for _, child := range e.GetContainer().Children {
 		child.Update()
+	}
+}
+
+func (_ defaultsT) Draw(e ElementInterface) {
+	if !e.GetContainer().Visible {
+		return
+	}
+
+	e.drawSelf()
+
+	for _, child := range e.GetContainer().Children {
+		child.draw()
 	}
 }

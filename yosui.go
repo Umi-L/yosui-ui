@@ -5,6 +5,10 @@ import "github.com/umi-l/yosui-ui/gui"
 func MakeRootContainer(width, height int) gui.Container {
 	root := gui.NewContainer(gui.Transform{X: 0, Y: 0, W: float32(width), H: float32(height)}, true)
 
+	root.IsRoot = true
+
+	root.InitializeDrawStack()
+
 	return root
 }
 

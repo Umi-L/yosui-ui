@@ -1,10 +1,10 @@
 package gui
 
 import (
+	"github.com/umi-l/yosui-ui/utils"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/umi-l/yosui-ui/utils"
 )
 
 type Element struct { //elements are just Containers with drawables
@@ -13,13 +13,11 @@ type Element struct { //elements are just Containers with drawables
 	Image *ebiten.Image
 
 	initialized bool
-
-	name string
 }
 
 func (e *Element) Init() {
 	e.Transform = MakeTransformWithImage(e.Image, OriginTopLeft)
-	e.CalculateRect()
+	e.calculateRect()
 
 	e.initialized = true
 }
@@ -30,37 +28,32 @@ func (e Element) checkInitialized() {
 	}
 }
 
-func (e Element) Draw(screen *ebiten.Image) {
+func (e Element) drawSelf() {
 	e.checkInitialized()
 
 	if !e.Visible {
 		return
 	}
-	utils.DrawImageAtRect(screen, e.Image, e.Rect, &ebiten.DrawImageOptions{})
+	call := func(screen *ebiten.Image) {
+		utils.DrawImageAtRect(screen, e.Image, e.Rect, &ebiten.DrawImageOptions{})
+	}
+	e.GetRoot().AddToDrawStack(e.ZIndex, call)
 }
 
-func (e Element) DrawTree(screen *ebiten.Image) {
-
-	if !e.Visible {
-		return
-	}
-
-	for _, child := range e.children {
-		Draw(&e, screen)
-		child.DrawTree(screen)
-	}
+func (e Element) draw() {
+	Defaults.Draw(&e)
 }
 
 func (e *Element) Update() {
 	Defaults.UpdateChildren(e)
 }
 
-func (e *Element) CalculateRect() {
+func (e *Element) calculateRect() {
 	e.Rect = Defaults.CalculateRect(e)
 }
 
-func (e Element) GetContainer() Container {
-	return e.Container
+func (e Element) GetContainer() *Container {
+	return &e.Container
 }
 
 func (e *Element) SetParent(parent *Container) {
@@ -77,10 +70,10 @@ func MakeElement(image *ebiten.Image) Element {
 }
 
 type ElementInterface interface {
-	Draw(screen *ebiten.Image)
-	DrawTree(screen *ebiten.Image)
+	drawSelf()
+	draw()
 	Update()
-	CalculateRect()
+	calculateRect()
 	SetParent(parent *Container)
-	GetContainer() Container
+	GetContainer() *Container
 }
