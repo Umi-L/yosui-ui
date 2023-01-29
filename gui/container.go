@@ -31,6 +31,19 @@ func (c *Container) SetParent(parent *Container) {
 	c.Parent = parent
 }
 
+func (c Container) IsVisible() bool {
+
+	if !c.Visible {
+		return false
+	}
+	
+	if c.Parent != nil {
+		return c.Parent.IsVisible()
+	}
+
+	return true
+}
+
 func (c Container) Draw(screen *ebiten.Image) {}
 
 func (c *Container) Update() {

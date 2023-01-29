@@ -23,7 +23,7 @@ type Game struct {
 
 func (g *Game) Update() error {
 
-	if g.Gui.MainMenu.PlayButton.IsPressed() && g.Gui.MainMenu.PlayButton.Visible {
+	if g.Gui.MainMenu.PlayButton.IsPressed() && g.Gui.MainMenu.PlayButton.IsVisible() {
 		fmt.Print("Button Pressed \n")
 		g.Gui.MainMenu.PlayButton.Visible = false
 	}
