@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/umi-l/yosui-ui/widgets"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/umi-l/waloader"
 	"github.com/umi-l/yosui-ui"
 	"github.com/umi-l/yosui-ui/gui"
-	"github.com/umi-l/yosui-ui/widgets"
 )
 
 const (
@@ -22,11 +22,6 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
-
-	if g.Gui.MainMenu.PlayButton.IsPressed() && g.Gui.MainMenu.PlayButton.IsVisible() {
-		fmt.Print("Button Pressed \n")
-		g.Gui.MainMenu.PlayButton.Visible = false
-	}
 
 	return nil
 }
@@ -73,7 +68,10 @@ func main() {
 	trans.XPercent = 0.5
 	trans.YPercent = 0.5
 
-	playButton := widgets.NewButton(playButtonSprite.Image, trans)
+	playButton := widgets.NewButton(playButtonSprite.Image, trans, func() {
+		fmt.Print("Button Pressed \n")
+		game.Gui.MainMenu.PlayButton.Visible = false
+	})
 
 	//add to main menu
 	mainMenu.AddChild(&playButton)

@@ -19,7 +19,7 @@ type GuiButton struct {
 }
 
 func (b GuiButton) Update() {
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && b.IsVisible() {
 		var x, y = ebiten.CursorPosition()
 		if b.Rect.Contains((float32)(x), (float32)(y)) {
 			b.OnPressed()
@@ -29,7 +29,7 @@ func (b GuiButton) Update() {
 
 func (b *GuiButton) Init() {
 	b.Transform = gui.MakeTransformWithImage(b.Image, gui.OriginTopLeft)
-	b.calculateRect()
+	b.CalculateRect()
 
 	b.initialized = true
 }
@@ -40,10 +40,8 @@ func (b GuiButton) checkInitialized() {
 	}
 }
 
-func (b GuiButton) drawSelf() {
+func (b GuiButton) DrawSelf() {
 	b.checkInitialized()
-
-	log.Print("Drawself")
 
 	if !b.Visible {
 		return
@@ -51,16 +49,15 @@ func (b GuiButton) drawSelf() {
 
 	call := func(screen *ebiten.Image) {
 		utils.DrawImageAtRect(screen, b.Image, b.Rect, &ebiten.DrawImageOptions{})
-		log.Print("Drawing button")
 	}
 	b.GetRoot().AddToDrawStack(b.ZIndex, call)
 }
 
-func (b GuiButton) draw() {
-	gui.Defaults.Draw(&b)
+func (b *GuiButton) Draw() {
+	gui.Defaults.Draw(b)
 }
 
-func (b *GuiButton) calculateRect() {
+func (b *GuiButton) CalculateRect() {
 	b.Rect = gui.Defaults.CalculateRect(b)
 }
 
@@ -85,4 +82,14 @@ func NewButton(image *ebiten.Image, transform gui.Transform, onClick func()) Gui
 	button.Visible = true
 
 	return button
+}
+
+type ElementInterface interface {
+	drawSelf()
+	draw()
+	draw1()
+	Update()
+	calculateRect()
+	SetParent(parent *gui.Container)
+	GetContainer() *gui.Container
 }

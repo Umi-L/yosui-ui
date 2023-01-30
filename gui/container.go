@@ -47,17 +47,17 @@ func (c *Container) GetRoot() *Container {
 // function used to UPDATE the transform of a container and all of its children. Should be used during runtime.
 func (c *Container) UpdateTransform(t Transform) {
 	c.Transform = t
-	c.calculateRect()
+	c.CalculateRect()
 
 	for _, child := range c.Children {
-		child.calculateRect()
+		child.CalculateRect()
 	}
 }
 
 func (c *Container) AddChild(child ElementInterface) {
 	c.Children = append(c.Children, child)
 	child.SetParent(c)
-	child.calculateRect()
+	child.CalculateRect()
 }
 
 func (c *Container) SetParent(parent *Container) {
@@ -77,21 +77,21 @@ func (c Container) IsVisible() bool {
 	return true
 }
 
-func (c Container) drawSelf() {}
+func (c Container) DrawSelf() {}
 
 func (c *Container) Update() {
 	Defaults.UpdateChildren(c)
 }
 
-func (c *Container) draw() {
+func (c *Container) Draw() {
 	Defaults.Draw(c)
 }
 
 func (c *Container) DrawAsRoot(screen *ebiten.Image) {
-	c.draw()
+	c.Draw()
 
 	if !c.IsRoot {
-		log.Fatal("Trying to draw as root with non-root container")
+		log.Fatal("Trying to Draw as root with non-root container")
 	}
 
 	//get keys in order
@@ -105,7 +105,7 @@ func (c *Container) DrawAsRoot(screen *ebiten.Image) {
 
 	sort.Ints(keys)
 
-	//make draw calls
+	//make Draw calls
 	for j := range c.drawStack {
 		calls := c.drawStack[keys[j]]
 		for _, call := range calls {
@@ -119,7 +119,7 @@ func (c *Container) DrawAsRoot(screen *ebiten.Image) {
 
 func (c *Container) InitializeDrawStack() {
 	if !c.IsRoot {
-		log.Fatal("trying to initialize draw stack on non-root container")
+		log.Fatal("trying to initialize Draw stack on non-root container")
 	}
 
 	c.drawStack = make(map[int][]DrawCall)
@@ -129,7 +129,7 @@ func (c *Container) GetContainer() *Container {
 	return c
 }
 
-func (c *Container) calculateRect() {
+func (c *Container) CalculateRect() {
 	c.Rect = Defaults.CalculateRect(c)
 }
 

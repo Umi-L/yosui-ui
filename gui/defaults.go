@@ -1,9 +1,8 @@
 package gui
 
 import (
-	"log"
-
 	"github.com/umi-l/yosui-ui/types"
+	"log"
 )
 
 type defaultsT struct{} // unexported type
@@ -65,7 +64,7 @@ func (_ defaultsT) CalculateRect(e ElementInterface) types.Rect {
 	calcRect.Y -= c.Transform.Origin.Y
 
 	for _, child := range c.Children {
-		child.calculateRect()
+		child.CalculateRect()
 	}
 
 	return calcRect
@@ -83,9 +82,9 @@ func (_ defaultsT) Draw(e ElementInterface) {
 		return
 	}
 
-	e.drawSelf()
+	e.DrawSelf()
 
 	for _, child := range e.GetContainer().Children {
-		child.draw()
+		child.Draw()
 	}
 }
